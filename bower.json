@@ -1,0 +1,21 @@
+{
+  "name": "mg-modal-opener",
+  "version": "1.0.0",
+  "homepage": "https://github.com/possible819/mg-modal-opener",
+  "authors": [
+    "Jay Lee <jaylee.possible@gmail.com>"
+  ],
+  "description": "polymer mg-modal-opener component",
+  "main": "mg-modal-opener.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "polymer/polymer#^1.9.2"
+  }
+}
