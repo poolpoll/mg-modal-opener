@@ -3,6 +3,10 @@
 <dom-module id="mg-modal-opener">
 	<template>
 		<style>
+			#screen-container {
+				position: absolute;
+				width: 100%;
+			}
 			#modal {
 				position: absolute;
 				left: 0;
@@ -11,13 +15,79 @@
 				height: 100vh;
 			}
 		</style>
-		<div id="modal"></div>
+		<div id="screen-container"></div>
+		<div id="modal" hidden="[[isHideModal]]" on-tap="_modalTapped"></div>
 	</template>
 	<script>
 		Polymer({
 			is: 'mg-modal-opener',
 
 			properties: {
+				isHideModal: {
+					type: Boolean,
+					value: true
+				}
+			},
+
+			ready: function() {
+				document.addEventListener('mg-modal-toggle', function(event) {
+					if(this.isHideModal) {
+						this.initOptionAndOpen({
+							top: event.detail.top,
+							screen: event.detail.screen,
+							name: event.detail.name,
+							zIndex: event.detail.zIndex,
+							background: event.detail.background,
+							opacity: event.detail.opacity,
+							callback: event.detail.callback
+						});
+					} else {
+						this.isHideModal = !this.isHideModal;
+					}
+				}.bind(this));
+
+				document.addEventListener('mg-modal-open', function(event) {
+					this.initOptionAndOpen({
+						top: event.detail.top,
+						screen: event.detail.screen,
+						name: event.detail.name,
+						zIndex: event.detail.zIndex,
+						background: event.detail.background,
+						opacity: event.detail.opacity,
+						callback: event.detail.callback
+					});
+				}.bind(this));
+
+				document.addEventListener('mg-modal-close', function() {
+					this.closeModal();
+				}.bind(this));
+			},
+
+			openModal: function() {
+				this.isHideModal = false;
+			},
+
+			closeModal: function() {
+				this.isHideModal = true;
+			},			
+
+			initOptionAndOpen: function(options) {
+				var modal = this.$['modal'];
+				var screenContainer = this.$['screen-container'];
+				modal.name = options.name;
+				modal.style.zIndex = options.zIndex;
+				modal.style.background = options.background;
+				modal.style.opacity = options.opacity;
+				screenContainer.style.zIndex = options.zIndex + 1;
+				screenContainer.style.top = options.top;
+				screenContainer.appendChild(options.screen);
+				this.isHideModal = false;
+				if(options.callback) options.callback();
+			},
+
+			_modalTapped: function(event) {
+				var modal = this.$['modal'];
+				this.fire('mg-modal-' + modal.name + '-tapped', this);
 			}
 		})
 	</script>
